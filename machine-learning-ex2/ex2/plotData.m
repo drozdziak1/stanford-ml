@@ -15,9 +15,9 @@ figure; hold on;
 for i = 1:size(y)
 
 	if y(i)
-		plotSymbol = "k+"
+		plotSymbol = "b+";
 	else
-		plotSymbol = "ko"
+		plotSymbol = "ro";
 	end
 
 	figure(1)
