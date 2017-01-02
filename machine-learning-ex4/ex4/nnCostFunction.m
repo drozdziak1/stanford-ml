@@ -62,10 +62,20 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
-Delta2 = zeros(num_labels, size(Theta1, 1) + 1);
+Delta1 = zeros(size(Theta1));
+Delta2 = zeros(size(Theta2));
+
+J = 0;
+
+% y is only a vector of class ids, y2v is a helper matrix for translating class
+% ids to corresponding probability vectors
+y2v = eye(num_labels);
 
 for i = 1:m
+    % Translate y(i) to a probability vector
+    yVec = y2v(:, y(i));
 
+    % Propagate forward
     a1 = [1; X(i, :)'];
 
     z2 =  Theta1 *  a1;
@@ -74,33 +84,34 @@ for i = 1:m
     zh =  Theta2 * a2;
     h = sigmoid(zh);
 
-    deltaL = h - y(i, :);
-
-    printf(
-        "Theta2': %dx%d\ndeltaL: %dx%d\nsigmoidGradient(z2): %dx%d\n z2: %dx%d\n",
-        size(Theta2)(1), size(Theta2)(2),
-        size(deltaL)(1), size(deltaL)(2),
-        size(sigmoidGradient(z2))(1), size(sigmoidGradient(z2))(2),
-        size(z2)(1), size(z2)(2)
-        );
+    % Propagate back
+    deltaL = h - yVec;
 
     delta2 = (Theta2' * deltaL)(2:end) .* sigmoidGradient(z2);
 
     Delta2 += deltaL * a2';
+    Delta1 += delta2 * a1';
 
-    D2 = Delta2/m;
-    D2(:, 1) += lambda * Theta2;
-
+    % Add i-th example's cost
+    J += sum(-yVec .* log(h) - (1 - yVec) .* log(1 - h));
 end;
 
+% Regularize the accumulated gradient values
+D1 = Delta1;
+D1(:, 2:end) += lambda * Theta1(:, 2:end);
 
+D2 = Delta2;
+D2(:, 2:end) += lambda * Theta2(:, 2:end);
 
+D1 /= m;
+D2 /= m;
 
+Theta1_grad = D1;
+Theta2_grad = D2;
 
-
-
-
-
+% Calculate and regularize the cost
+J /= m;
+J += (sum(sum(Theta1(:, 2:end) .^ 2)) + sum(sum(Theta2(:, 2:end) .^ 2))) * lambda / (2 * m);
 
 
 
