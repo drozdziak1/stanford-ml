@@ -23,7 +23,25 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
+vec = [0.01 0.03 0.1 0.3 1 3 10 30];
 
+emin = 1;
+
+for i = vec % C candidate
+    for j = vec % sigma candidate
+        gk = @(x1, x2) gaussianKernel(x1, x2, j);
+        model = svmTrain(X, y, i, gk);
+
+        predictions = svmPredict(model, Xval);
+        e_candidate = mean(double(predictions ~= yval));
+
+        if (e_candidate < emin)
+            C = i;
+            sigma = j;
+            emin = e_candidate;
+        end
+    end
+end
 
 
 
