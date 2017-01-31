@@ -24,15 +24,14 @@ idx = zeros(size(X,1), 1);
 Idx = zeros(size(X,1), K);
 
 for i=1:size(X,1)
-	Idx(i) = norm(centroids .- X(i), 2)
+
+	Idx(i,:) = sqrt(sum((X(i, :) - centroids) .^ 2, 2))';
 
 end
 
 ignored = 0;
 
 [ignored idx] = min(Idx, [], 2);
-
-idx
 
 
 
