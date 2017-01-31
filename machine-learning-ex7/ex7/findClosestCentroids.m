@@ -21,9 +21,18 @@ idx = zeros(size(X,1), 1);
 % Note: You can use a for-loop over the examples to compute this.
 %
 
+Idx = zeros(size(X,1), K);
 
+for i=1:size(X,1)
+	Idx(i) = norm(centroids .- X(i), 2)
 
+end
 
+ignored = 0;
+
+[ignored idx] = min(Idx, [], 2);
+
+idx
 
 
 
