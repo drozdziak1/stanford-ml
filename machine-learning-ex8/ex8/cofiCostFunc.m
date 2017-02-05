@@ -46,17 +46,17 @@ J += lambda / 2 * sum(X(:) .^ 2);
 
 for i = 1:num_movies
     idx = find(R(i, :));
-    Theta_tmp = Theta(idx, :);
-    Y_tmp = Y(i, idx);
-    X_grad(i, :) = (X(i, :) * Theta_tmp' - Y_tmp) * Theta_tmp;
+    Theta_rtd = Theta(idx, :);
+    Y_rtd = Y(i, idx);
+    X_grad(i, :) = (X(i, :) * Theta_rtd' - Y_rtd) * Theta_rtd;
     X_grad(i, :) += lambda * X(i, :);
 end
 
 for i = 1:num_users
     idx = find(R(:, i));
-    X_tmp = X(idx, :);
-    Y_tmp = Y(idx, i);
-    Theta_grad(i, :) = (X_tmp * Theta(i, :)' - Y_tmp)' * X_tmp;
+    X_rtd = X(idx, :);
+    Y_rtd = Y(idx, i);
+    Theta_grad(i, :) = (X_rtd * Theta(i, :)' - Y_rtd)' * X_rtd;
     Theta_grad(i, :) += lambda * Theta(i, :);
 end
 
